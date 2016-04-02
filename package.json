@@ -1,0 +1,35 @@
+{
+  "name": "express-send-seekable",
+  "version": "1.0.0",
+  "description": "Express.js/connect middleware for serving partial content (206) requests for buffers or streams",
+  "main": "send-seekable.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/glebec/express-send-seekable.git"
+  },
+  "keywords": [
+    "partial",
+    "content",
+    "206",
+    "seek",
+    "seekable",
+    "stream",
+    "buffer",
+    "express",
+    "middleware",
+    "range",
+    "ranges",
+    "bytes",
+    "accept-ranges",
+    "content-range"
+  ],
+  "author": "Gabriel Lebec <glebec@gmail.com> (https://github.com/glebec)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/glebec/express-send-seekable/issues"
+  },
+  "homepage": "https://github.com/glebec/express-send-seekable#readme"
+}
