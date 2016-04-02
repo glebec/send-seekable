@@ -31,5 +31,11 @@
   "bugs": {
     "url": "https://github.com/glebec/express-send-seekable/issues"
   },
-  "homepage": "https://github.com/glebec/express-send-seekable#readme"
+  "homepage": "https://github.com/glebec/express-send-seekable#readme",
+  "dependencies": {
+    "range-stream": "1.1.0"
+  },
+  "devDependencies": {
+    "mocha": "2.4.5"
+  }
 }
