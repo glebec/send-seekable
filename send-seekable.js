@@ -1,8 +1,14 @@
 'use strict';
 var rangeStream = require('range-stream');
+var sbuff = require('simple-bufferstream');
 
 // the generic handler for serving up partial streams
 function sendSeekable (stream, config, req, res, next) {
+  if (stream instanceof Buffer) {
+    config = config || {};
+    config.length = stream.length;
+    stream = sbuff(stream);
+  }
   if (!config.length) {
     var err = new Error('send-seekable requires `length` option');
     return next(err);
