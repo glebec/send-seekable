@@ -6,6 +6,7 @@ const chai = require('chai');
 const expect = chai.expect;
 const sinon = require('sinon');
 const sinonChai = require('sinon-chai');
+const parseRange = require('range-parser');
 chai.use(sinonChai);
 
 const sendSeekable = require('../send-seekable');;
@@ -39,6 +40,9 @@ describe('`res.sendSeekable`', function () {
     const app = new Express();
     app.get('/', sendSeekable, function (req, res) {
       res.sendSeekable(content, config);
+    });
+    app.use(function (err, req, res, next) {
+      res.sendStatus(500);
     });
     appTester = test(app);
   });
@@ -126,28 +130,20 @@ describe('`res.sendSeekable`', function () {
 
         function testRange (firstByte, lastByte) {
           // valid ranges
-          // (0) | (0, 0) | (0, m) | (0, e) | (0, b)
-          // (m) | (m, m) | (m, l) | (m, e) | (m, b)
-          // (e) | (e, e) | (e, b)
-          // (null, 0) | (null, m) | (null, e) | (null, b)
+          //  0 | 0-0 | 0-m | 0-e | 0-b
+          //  m | m-m | m-l | m-e | m-b
+          //  e | e-e | e-b
+          // -0 | -m  | -e | -b
 
           let trueFirst, trueLast;
           beforeEach(function () {
+            const rangeString = 'bytes=' + firstByte + '-' + lastByte;
             // set requested content range
-            appTester = appTester.set('Range', 'bytes=' + firstByte + '-' + lastByte);
-            // determine actual range end point
-            if (typeof lastByte === 'number') {
-              trueLast = Math.min(lastByte, content.length - 1);
-            } else {
-              trueLast = content.length - 1;
-            }
-            // determine actual range start point
-            if (!firstByte && firstByte !== 0) {
-              trueFirst = content.length - 1 - lastByte;
-              trueFirst = Math.max(0, trueFirst);
-            } else {
-              trueFirst = firstByte;
-            }
+            appTester = appTester.set('Range', rangeString);
+            // determine actual range
+            const range = parseRange(content.length, rangeString);
+            trueFirst = range[0].start;
+            trueLast = range[0].end;
           });
 
           it('sets a 206 status', function (done) {
@@ -185,56 +181,103 @@ describe('`res.sendSeekable`', function () {
         const end = 32;
         const beyond = 50;
 
-        describe('0 to unspecified', function () {
+        describe('[0, unspecified]', function () {
           testRange(0);
         });
 
-        describe('0 to 0', function () {
+        describe('[0, 0]', function () {
           testRange(0, 0);
         });
 
-        describe('0 to a middle point', function () {
+        describe('[0, a middle point]', function () {
           testRange(0, middle);
         });
 
-        describe('0 to the end', function () {
+        describe('[0, the end]', function () {
           testRange(0, end);
         });
 
-        describe('0 to beyond the end', function () {
+        describe('[0, beyond the end]', function () {
           testRange(0, beyond);
         });
 
-        describe('a middle point to unspecified', function () {
+        describe('[a middle point, unspecified]', function () {
           testRange(middle);
         });
 
-        describe('a middle point to the same point', function () {
+        describe('[a middle point, the same point]', function () {
           testRange(middle, middle);
         });
 
-        describe('a middle point to a later point', function () {
+        describe('[a middle point, a later point]', function () {
           testRange(middle, later);
         });
 
-        describe('a middle point to the end', function () {
+        describe('[a middle point, the end]', function () {
           testRange(middle, end);
         });
 
-        describe('a middle point to beyond the end', function () {
+        describe('[a middle point, beyond the end]', function () {
           testRange(middle, beyond);
         });
 
-        describe('the end to unspecified', function () {
+        describe('[the end, unspecified]', function () {
           testRange(end);
         });
 
-        describe('the end to the end', function () {
+        describe('[the end, the end]', function () {
           testRange(end, end);
         });
 
-        describe('the end to beyond the end', function () {
+        describe('[the end, beyond the end]', function () {
           testRange(end, beyond);
+        });
+
+        describe('[the last byte]', function () {
+          testRange(null, 1);
+        });
+
+        describe('[the last byte to the middle]', function () {
+          testRange(null, middle);
+        });
+
+        describe('[the last byte to the beginning]', function () {
+          testRange(null, end + 1);
+        });
+
+      });
+
+      describe('for invalid byte range', function () {
+
+        it('<malformed> triggers a 400 status', function (done) {
+          appTester.set('Range', 'hello')
+          .expect(400, done);
+        });
+
+        it('<start beyond end> triggers a 416 status', function (done) {
+          appTester.set('Range', 'bytes=3-1')
+          .expect(416)
+          .expect('Content-Range', '*/33', done);;
+        });
+
+        it('<start beyond total> triggers a 416 status', function (done) {
+          appTester.set('Range', 'bytes=-50')
+          .expect(416)
+          .expect('Content-Range', '*/33', done);;
+        });
+
+        it('<end below 0> triggers a 416 status', function (done) {
+          appTester.set('Range', 'bytes=-50')
+          .expect(416)
+          .expect('Content-Range', '*/33', done);;
+        });
+
+      });
+
+      describe('for unsupported byte range', function () {
+
+        it('<multipart> throws an error', function (done) {
+          appTester.set('Range', 'bytes=0-4,10-14').expect(500, done);
         });
 
       });

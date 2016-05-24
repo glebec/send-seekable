@@ -1,5 +1,6 @@
 'use strict';
 var rangeStream = require('range-stream');
+var parseRange = require('range-parser');
 var sbuff = require('simple-bufferstream');
 
 module.exports = function (req, res, next) {
@@ -28,11 +29,20 @@ function sendSeekable (stream, config, req, res, next) {
   if (config.type) res.set('Content-Type', config.type);
   // if this is a partial request
   if (req.headers.range) {
-    // parsing request
-    const span = req.headers.range.split('=')[1].split('-');
-    let end = parseInt(span[1], 10);
-    if (isNaN(end) || end > (config.length - 1)) end = (config.length - 1);
-    let start = parseInt(span[0], 10);
+    // parse ranges
+    const ranges = parseRange(config.length, req.headers.range);
+    if (ranges === -2) return res.sendStatus(400); // malformed range
+    if (ranges === -1) {
+      // unsatisfiable range
+      res.set('Content-Range', `*/${config.length}`);
+      return res.sendStatus(416);
+    }
+    if (ranges.type !== 'bytes') return stream.pipe(res);
+    if (ranges.length > 1) {
+      return next(new Error('send-seekable can only serve single ranges'));
+    }
+    const start = ranges[0].start;
+    const end = ranges[0].end;
     // formatting response
     res.status(206);
     res.set('Content-Length', (end - start) + 1); // end is inclusive
