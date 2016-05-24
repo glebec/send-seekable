@@ -2,6 +2,14 @@
 var rangeStream = require('range-stream');
 var sbuff = require('simple-bufferstream');
 
+module.exports = function (req, res, next) {
+  // every new request gets a thin wrapper over the generic function
+  res.sendSeekable = function (stream, config) {
+    return sendSeekable (stream, config, req, res, next);
+  };
+  next();
+};
+
 // the generic handler for serving up partial streams
 function sendSeekable (stream, config, req, res, next) {
   if (stream instanceof Buffer) {
@@ -21,9 +29,10 @@ function sendSeekable (stream, config, req, res, next) {
   // if this is a partial request
   if (req.headers.range) {
     // parsing request
-    const span = req.headers.range.split('=')[1].split('-'),
-          start = parseInt(span[0], 10),
-          end = parseInt(span[1], 10) || config.length - 1;
+    const span = req.headers.range.split('=')[1].split('-');
+    let end = parseInt(span[1], 10);
+    if (isNaN(end) || end > (config.length - 1)) end = (config.length - 1);
+    let start = parseInt(span[0], 10);
     // formatting response
     res.status(206);
     res.set('Content-Length', (end - start) + 1); // end is inclusive
@@ -32,12 +41,4 @@ function sendSeekable (stream, config, req, res, next) {
     stream = stream.pipe(rangeStream(start, end));
   }
   return stream.pipe(res);
-};
-
-module.exports = function (req, res, next) {
-  // every new request gets a thin wrapper over the generic function
-  res.sendSeekable = function (stream, config) {
-    return sendSeekable (stream, config, req, res, next);
-  };
-  next();
 };
