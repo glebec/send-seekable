@@ -308,7 +308,7 @@ describe('`res.sendSeekable`', function () {
             appTester.expect(416, done);
           });
 
-          it('sets the `Content-Length` header to `*/total`', function (done) {
+          it('sets the `Content-Range` header to `*/total`', function (done) {
             appTester.expect('Content-Range', '*/' + content.length, done);
           });
 
