@@ -290,6 +290,12 @@ describe('`res.sendSeekable`', function () {
             .expect(400, done);
           });
 
+          it('does not set the `Content-Range` header', function (done) {
+            appTester.expect(function (res) {
+              expect(res.headers['content-range']).to.not.exist; // Chai getter
+            }).end(done);
+          });
+
         });
 
         function testUnsatisfiableRange (range) {
@@ -330,6 +336,12 @@ describe('`res.sendSeekable`', function () {
 
         it('<multipart> throws an error', function (done) {
           appTester.set('Range', 'bytes=0-4,10-14').expect(500, done);
+        });
+
+        it('does not set the `Content-Range` header', function (done) {
+          appTester.expect(function (res) {
+            expect(res.headers['content-range']).to.not.exist; // Chai getter
+          }).end(done);
         });
 
       });
