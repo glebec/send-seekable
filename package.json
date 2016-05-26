@@ -4,7 +4,8 @@
   "description": "Express.js/connect middleware for serving partial content (206) requests for buffers or streams",
   "main": "send-seekable.js",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "develop": "mocha --watch --reporter min"
   },
   "repository": {
     "type": "git",
