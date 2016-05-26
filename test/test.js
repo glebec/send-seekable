@@ -129,16 +129,13 @@ describe('`res.sendSeekable`', function () {
       describe('for valid byte range', function () {
 
         function testRange (firstByte, lastByte) {
-          // valid ranges
-          //  0 | 0-0 | 0-m | 0-e | 0-b
-          //  m | m-m | m-l | m-e | m-b
-          //  e | e-e | e-b
-          // -0 | -m  | -e | -b
 
           let trueFirst, trueLast;
           beforeEach(function () {
-            const rangeString = 'bytes=' + firstByte + '-' + lastByte;
+            if (typeof firstByte !== 'number') firstByte = '';
+            if (typeof lastByte !== 'number') lastByte = '';
             // set requested content range
+            const rangeString = 'bytes=' + firstByte + '-' + lastByte;
             appTester = appTester.set('Range', rangeString);
             // determine actual range
             const range = parseRange(content.length, rangeString);
@@ -249,27 +246,45 @@ describe('`res.sendSeekable`', function () {
 
       describe('for invalid byte range', function () {
 
-        it('<malformed> triggers a 400 status', function (done) {
-          appTester.set('Range', 'hello')
-          .expect(400, done);
+        describe('<malformed>', function () {
+
+          it('sets a 400 status', function (done) {
+            appTester.set('Range', 'hello')
+            .expect(400, done);
+          });
+
         });
 
-        it('<start beyond end> triggers a 416 status', function (done) {
-          appTester.set('Range', 'bytes=3-1')
-          .expect(416)
-          .expect('Content-Range', '*/33', done);;
+        function testUnsatisfiableRange (range) {
+
+          beforeEach(function () {
+            appTester = appTester.set('Range', 'bytes=' + range);
+          });
+
+          it('sets a 416 status', function (done) {
+            appTester.expect(416, done);
+          });
+
+          it('sets the `Content-Length` header to `*/total`', function (done) {
+            appTester.expect('Content-Range', '*/33', done);
+          });
+
+        }
+
+        describe('<start beyond end>', function () {
+          testUnsatisfiableRange('3-1');
         });
 
-        it('<start beyond total> triggers a 416 status', function (done) {
-          appTester.set('Range', 'bytes=-50')
-          .expect(416)
-          .expect('Content-Range', '*/33', done);;
+        describe('<start beyond total>', function () {
+          testUnsatisfiableRange('50-');
         });
 
-        it('<end below 0> triggers a 416 status', function (done) {
-          appTester.set('Range', 'bytes=-50')
-          .expect(416)
-          .expect('Content-Range', '*/33', done);;
+        describe('<end below 0>', function () {
+          testUnsatisfiableRange('-50');
+        });
+
+        describe('<no range>', function () {
+          testUnsatisfiableRange('-');
         });
 
       });
