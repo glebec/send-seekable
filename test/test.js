@@ -1,5 +1,7 @@
 'use strict';
 
+const fs = require('fs');
+const path = require('path');
 const Express = require('express');
 const test = require('supertest');
 const chai = require('chai');
@@ -64,8 +66,44 @@ describe('`res.sendSeekable`', function () {
 
   describe('when passed a buffer:', function () {
 
+    function TestBuffer () {
+      return new Buffer('Where Alph, the sacred river, ran');
+    }
+
+    testSupportedContent(TestBuffer);
+
+  });
+
+  describe('when passed a stream:', function () {
+
+    const testFilePath = path.join(__dirname, 'test.js');
+    const len = fs.statSync(testFilePath).size;
+    const contents = fs.readFileSync(testFilePath, 'utf8');
+
+    function TestStream () {
+      const stream = fs.createReadStream(path.join(__dirname, 'test.js'), {
+        encoding: 'utf8'
+      });
+      stream.length = len;
+      stream.toString = function () { return contents; };
+      return stream;
+    }
+
+    testSupportedContent(TestStream, { length: len });
+
+  });
+
+  function testSupportedContent (Content, testConfig) {
+
+    content = new Content();
+    const middle = +Math.floor(content.length / 2);
+    const later = +Math.floor(content.length / 2) + 5;
+    const end = +content.length - 1;
+    const beyond = +content.length + 50;
+
     beforeEach(function () {
-      content = new Buffer('Where Alph, the sacred river, ran');
+      content = new Content();
+      config = testConfig;
     });
 
     describe('on HEAD request', function () {
@@ -82,7 +120,7 @@ describe('`res.sendSeekable`', function () {
         appTester.expect('', done);
       });
 
-      it('sets the `Content-Length` header to the buffer byte length', function (done) {
+      it('sets the `Content-Length` header to the content byte length', function (done) {
         appTester.expect('Content-Length', content.length, done);
       });
 
@@ -102,17 +140,18 @@ describe('`res.sendSeekable`', function () {
           appTester.expect(200, done);
         });
 
-        it('sends the entire buffer', function (done) {
+        it('sends the entire content', function (done) {
           appTester.expect(content.toString(), done);
         });
 
-        it('sets the `Content-Length` header to the buffer byte length', function (done) {
+        it('sets the `Content-Length` header to the content byte length', function (done) {
           appTester.expect('Content-Length', content.length, done);
         });
 
         it('sets the `Content-Type` header if configured', function (done) {
           const type = 'random string ' + (Math.random() * 999);
-          config = { type: type };
+          if (!config) config = {};
+          config.type = type;
           appTester.expect('Content-Type', type, done);
         });
 
@@ -166,17 +205,14 @@ describe('`res.sendSeekable`', function () {
 
           it('sets the `Content-Type` header if configured', function (done) {
             const type = 'random string ' + (Math.random() * 999);
-            config = { type: type };
+            if (!config) config = {};
+            config.type = type;
             appTester.expect('Content-Type', type, done);
           });
 
           testInvariantBehavior();
-        }
 
-        const middle = 27;
-        const later = 30;
-        const end = 32;
-        const beyond = 50;
+        }
 
         describe('[0, unspecified]', function () {
           testRange(0);
@@ -266,21 +302,21 @@ describe('`res.sendSeekable`', function () {
           });
 
           it('sets the `Content-Length` header to `*/total`', function (done) {
-            appTester.expect('Content-Range', '*/33', done);
+            appTester.expect('Content-Range', '*/' + content.length, done);
           });
 
         }
 
         describe('<start beyond end>', function () {
-          testUnsatisfiableRange('3-1');
+          testUnsatisfiableRange(later + '-' + middle);
         });
 
         describe('<start beyond total>', function () {
-          testUnsatisfiableRange('50-');
+          testUnsatisfiableRange(beyond + '-');
         });
 
         describe('<end below 0>', function () {
-          testUnsatisfiableRange('-50');
+          testUnsatisfiableRange('-' + beyond);
         });
 
         describe('<no range>', function () {
@@ -299,6 +335,6 @@ describe('`res.sendSeekable`', function () {
 
     });
 
-  });
+  }
 
 });
