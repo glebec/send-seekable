@@ -96,6 +96,7 @@ describe('`res.sendSeekable`', function () {
   function testSupportedContent (Content, testConfig) {
 
     content = new Content();
+    if (content.length < 20) throw Error('test fixture needs content > 20');
     const middle = +Math.floor(content.length / 2);
     const later = +Math.floor(content.length / 2) + 5;
     const end = +content.length - 1;
