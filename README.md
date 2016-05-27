@@ -25,7 +25,7 @@ app.listen(1337);
 ## Installation
 
 ```sh
-npm install express-send-seekable --save
+npm install send-seekable --save
 ```
 
 ## Features
