@@ -30,12 +30,13 @@ npm install express-send-seekable --save
 
 ### Supported
 
+* Node version 0.12.0 or higher
 * `GET` and `HEAD` requests (the latter is handled automatically by Express; the server will still produce the necessary buffer or stream as if preparing for a `GET`, but will refrain from actually transmitting the body)
 * Sending buffers (as they are)
 * Sending streams (requires predetermined metadata content length, in bytes)
 * Byte range requests
-  - From a starting byte: `bytes=2391-`
-  - From a starting byte to an ending byte: `bytes=3340-7839`
+  - From a given byte: `bytes=2391-`
+  - From a given byte to a later byte: `bytes=3340-7839`
   - The last X bytes: `bytes=-4936`
 
 ### Limitations

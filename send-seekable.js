@@ -30,23 +30,23 @@ function sendSeekable (stream, config, req, res, next) {
   // if this is a partial request
   if (req.headers.range) {
     // parse ranges
-    const ranges = parseRange(config.length, req.headers.range);
+    var ranges = parseRange(config.length, req.headers.range);
     if (ranges === -2) return res.sendStatus(400); // malformed range
     if (ranges === -1) {
       // unsatisfiable range
-      res.set('Content-Range', `*/${config.length}`);
+      res.set('Content-Range', '*/' + config.length);
       return res.sendStatus(416);
     }
     if (ranges.type !== 'bytes') return stream.pipe(res);
     if (ranges.length > 1) {
       return next(new Error('send-seekable can only serve single ranges'));
     }
-    const start = ranges[0].start;
-    const end = ranges[0].end;
+    var start = ranges[0].start;
+    var end = ranges[0].end;
     // formatting response
     res.status(206);
     res.set('Content-Length', (end - start) + 1); // end is inclusive
-    res.set('Content-Range', `bytes ${start}-${end}/${config.length}`);
+    res.set('Content-Range', 'bytes ' + start + '-' + end + '/' + config.length);
     // slicing the stream to partial content
     stream = stream.pipe(rangeStream(start, end));
   }

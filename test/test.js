@@ -1,17 +1,17 @@
 'use strict';
 
-const fs = require('fs');
-const path = require('path');
-const Express = require('express');
-const test = require('supertest');
-const chai = require('chai');
-const expect = chai.expect;
-const sinon = require('sinon');
-const sinonChai = require('sinon-chai');
-const parseRange = require('range-parser');
+var fs = require('fs');
+var path = require('path');
+var Express = require('express');
+var test = require('supertest');
+var chai = require('chai');
+var expect = chai.expect;
+var sinon = require('sinon');
+var sinonChai = require('sinon-chai');
+var parseRange = require('range-parser');
 chai.use(sinonChai);
 
-const sendSeekable = require('../send-seekable');;
+var sendSeekable = require('../send-seekable');;
 
 describe('The `express-send-seekable` module', function () {
 
@@ -21,13 +21,13 @@ describe('The `express-send-seekable` module', function () {
   });
 
   it('places a `sendSeekable` method on `res`', function () {
-    const res = {};
+    var res = {};
     sendSeekable({}, res, function next () {});
     expect(res.sendSeekable).to.be.an.instanceof(Function);
   });
 
   it('calls `next`', function () {
-    const next = sinon.spy();
+    var next = sinon.spy();
     sendSeekable({}, {}, next);
     expect(next).to.have.been.calledOnce; // Sinon getter prop, not a function
     expect(next).to.have.been.calledWith(); // distinct from `undefined`
@@ -37,9 +37,9 @@ describe('The `express-send-seekable` module', function () {
 
 describe('`res.sendSeekable`', function () {
 
-  let appTester, content, config;
+  var appTester, content, config;
   beforeEach(function () {
-    const app = new Express();
+    var app = new Express();
     app.get('/', sendSeekable, function (req, res) {
       res.sendSeekable(content, config);
     });
@@ -76,12 +76,12 @@ describe('`res.sendSeekable`', function () {
 
   describe('when passed a stream:', function () {
 
-    const testFilePath = path.join(__dirname, 'test.js');
-    const len = fs.statSync(testFilePath).size;
-    const contents = fs.readFileSync(testFilePath, 'utf8');
+    var testFilePath = path.join(__dirname, 'test.js');
+    var len = fs.statSync(testFilePath).size;
+    var contents = fs.readFileSync(testFilePath, 'utf8');
 
     function TestStream () {
-      const stream = fs.createReadStream(path.join(__dirname, 'test.js'), {
+      var stream = fs.createReadStream(path.join(__dirname, 'test.js'), {
         encoding: 'utf8'
       });
       stream.length = len;
@@ -97,10 +97,10 @@ describe('`res.sendSeekable`', function () {
 
     content = new Content();
     if (content.length < 20) throw Error('test fixture needs content > 20');
-    const middle = +Math.floor(content.length / 2);
-    const later = +Math.floor(content.length / 2) + 5;
-    const end = +content.length - 1;
-    const beyond = +content.length + 50;
+    var middle = +Math.floor(content.length / 2);
+    var later = +Math.floor(content.length / 2) + 5;
+    var end = +content.length - 1;
+    var beyond = +content.length + 50;
 
     beforeEach(function () {
       content = new Content();
@@ -150,7 +150,7 @@ describe('`res.sendSeekable`', function () {
         });
 
         it('sets the `Content-Type` header if configured', function (done) {
-          const type = 'random string ' + (Math.random() * 999);
+          var type = 'random string ' + (Math.random() * 999);
           if (!config) config = {};
           config.type = type;
           appTester.expect('Content-Type', type, done);
@@ -170,15 +170,15 @@ describe('`res.sendSeekable`', function () {
 
         function testRange (firstByte, lastByte) {
 
-          let trueFirst, trueLast;
+          var trueFirst, trueLast;
           beforeEach(function () {
             if (typeof firstByte !== 'number') firstByte = '';
             if (typeof lastByte !== 'number') lastByte = '';
             // set requested content range
-            const rangeString = 'bytes=' + firstByte + '-' + lastByte;
+            var rangeString = 'bytes=' + firstByte + '-' + lastByte;
             appTester = appTester.set('Range', rangeString);
             // determine actual range
-            const range = parseRange(content.length, rangeString);
+            var range = parseRange(content.length, rangeString);
             trueFirst = range[0].start;
             trueLast = range[0].end;
           });
@@ -188,7 +188,7 @@ describe('`res.sendSeekable`', function () {
           });
 
           it('sends the requested range', function (done) {
-            const range = content.toString().slice(trueFirst, trueLast + 1);
+            var range = content.toString().slice(trueFirst, trueLast + 1);
             appTester.expect(range, done);
           });
 
@@ -199,13 +199,13 @@ describe('`res.sendSeekable`', function () {
           });
 
           it('sets the `Content-Range` header to the range returned', function (done) {
-            const len = content.length;
-            const rangeString = 'bytes ' + trueFirst + '-' + trueLast + '/' + len;
+            var len = content.length;
+            var rangeString = 'bytes ' + trueFirst + '-' + trueLast + '/' + len;
             appTester.expect('Content-Range', rangeString, done);
           });
 
           it('sets the `Content-Type` header if configured', function (done) {
-            const type = 'random string ' + (Math.random() * 999);
+            var type = 'random string ' + (Math.random() * 999);
             if (!config) config = {};
             config.type = type;
             appTester.expect('Content-Type', type, done);
