@@ -1,9 +1,11 @@
 {
   "name": "send-seekable",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Express.js/connect middleware for serving partial content (206) requests for buffers or streams",
   "main": "send-seekable.js",
-  "engines": { "node": ">=0.12.0" },
+  "engines": {
+    "node": ">=0.12.0"
+  },
   "scripts": {
     "test": "mocha",
     "develop": "mocha --watch --reporter min"
