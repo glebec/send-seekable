@@ -94,7 +94,7 @@ Param | Type | Details
 `config` | `Object` | Optional for buffers; required for streams. Has two properties: `.type` is the optional MIME-type of the content (e.g. `audio/mp4`), and `.length` is the total size of the content in bytes (required for streams). More on this below.
 
 ```js
-const exampleBuffer = new Buffer('For he on honey-dew hath fed');
+const exampleBuffer = new Buffer('And close your eyes with holy dread');
 
 app.get('/', sendSeekable, function (req, res, next) {
   res.sendSeekable(exampleBuffer);
