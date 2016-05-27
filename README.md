@@ -1,4 +1,4 @@
-[![Codeship Status for glebec/send-seekable](https://codeship.com/projects/641e1c10-0600-0134-54e5-56f9205ea8b9/status?branch=master)](https://codeship.com/projects/154589)
+[![Codeship Status for glebec/send-seekable](https://codeship.com/projects/641e1c10-0600-0134-54e5-56f9205ea8b9/status?branch=master)](https://codeship.com/projects/154589) [![Greenkeeper.io is keeping this repo's dependencies up to date](https://img.shields.io/badge/greenkeeper.io-monitoring-brightgreen.svg)](https://greenkeeper.io/)
 
 # Send-Seekable
 
