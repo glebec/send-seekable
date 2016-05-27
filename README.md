@@ -2,6 +2,23 @@
 
 ### Express.js/connect middleware for serving partial content (206) byte-range responses from buffers or streams
 
+- [Send-Seekable](#)
+  - [Installation](#)
+  - [Features](#)
+    - [Supported](#)
+    - [Limitations](#)
+  - [Context and Use Case](#)
+  - [API / Guide](#)
+    - [sendSeekable (req, res, next)](#)
+    - [res.sendSeekable(stream|buffer, <config>)](#)
+      - [Sending Buffers](#)
+      - [Sending Streams](#)
+  - [Mechanics](#)
+    - [Initial request](#)
+    - [Subsequent range request](#)
+  - [Contributing](#)
+  - [License](#)
+
 Need to support seeking in a (reproducible) buffer or stream? Attach this middleware to your `GET` route and you can now `res.sendSeekable` your resource:
 
 ```js
