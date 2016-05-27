@@ -60,7 +60,9 @@ Regardless, sometimes you can't — or won't — store a resource on disk. Provi
 const sendSeekable = require('send-seekable');
 ```
 
-A Connect/Express-style middleware function. It simply adds the method `res.sendSeekable`, which you can call as needed. Attach the middleware to an app, router, or specific route:
+A Connect/Express-style middleware function. It simply adds the method `res.sendSeekable`, which you can call as needed.
+
+Attaching `sendSeekable` as app-wide middleware is an easy way to "set and forget." Your app and routes work exactly as they did before; you must deliberately call `res.sendSeekable` to actually change a route's behavior.
 
 ```js
 // works for all routes in this app / sub-routers
@@ -72,6 +74,8 @@ app.use(sendSeekable);
 router.use(sendSeekable);
 ```
 
+Alternatively, if you only need to support seeking for a small number of routes, you can attach the middleware selectively — adding the `res.sendSeekable` method just where needed. In practice however there is no performance difference.
+
 ```js
 // attached to this specific route
 app.get('/', sendSeekable, function (req, res, next){ /* ... */ });
@@ -81,10 +85,6 @@ app.get('/', sendSeekable, function (req, res, next){ /* ... */ });
 // also attached to this route
 router.get('/', sendSeekable, function (req, res, next) { /* ... */ });
 ```
-
-Attaching `sendSeekable` as app-wide middleware is an easy way to "set and forget." Your app and routes work exactly as they did before; you must deliberately call `res.sendSeekable` to actually change a route's behavior.
-
-Alternatively, if you only need to support seeking for a small number of routes, you can attach the middleware selectively — adding the `res.sendSeekable` method just where needed. In practice however there is no performance difference.
 
 ### `res.sendSeekable(stream|buffer, <config>)`
 
