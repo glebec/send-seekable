@@ -229,6 +229,16 @@ Next the user attempts to seek in the audio progress bar to a position correspon
 1. `res.sendSeekable`: streams the byte range to the client with `206` (partial content) status
 1. CLIENT: receives the requested range
 
+## Contributing
+
+Pull requests are welcome. Send-seekable includes a thorough test suite written for the Mocha framework. You may find it easier to develop for Send-seekable by running the test suite in file watch mode via:
+
+```sh
+npm run develop
+```
+
+Please add to the test specs (in `test/test.js`) for any new features / functionality. Pull requests without tests, or with failing tests, will be gently reminded to include tests.
+
 ## License
 
 MIT
