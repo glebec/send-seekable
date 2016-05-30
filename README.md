@@ -1,4 +1,4 @@
-[![npm version](https://badge.fury.io/js/send-seekable.svg)](https://www.npmjs.com/package/send-seekable) [![Codeship Status for glebec/send-seekable](https://codeship.com/projects/641e1c10-0600-0134-54e5-56f9205ea8b9/status?branch=master)](https://codeship.com/projects/154589) [![Greenkeeper.io is keeping this repo's dependencies up to date](https://img.shields.io/badge/greenkeeper.io-monitoring-brightgreen.svg)](https://greenkeeper.io/)
+[![npm version](https://img.shields.io/npm/v/send-seekable.svg?maxAge=3600)](https://www.npmjs.com/package/send-seekable) [![Codeship](https://img.shields.io/codeship/641e1c10-0600-0134-54e5-56f9205ea8b9.svg?maxAge=3600)](https://codeship.com/projects/154589) [![Greenkeeper.io is keeping this repo's dependencies up to date](https://img.shields.io/badge/greenkeeper.io-monitoring-brightgreen.svg?maxAge=3600)](https://greenkeeper.io/)
 
 # Send-Seekable
 
