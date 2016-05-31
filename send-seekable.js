@@ -51,4 +51,4 @@ function sendSeekable (stream, config, req, res, next) {
     stream = stream.pipe(rangeStream(start, end));
   }
   return stream.pipe(res);
-};
+}
