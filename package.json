@@ -37,7 +37,7 @@
   },
   "homepage": "https://github.com/glebec/express-send-seekable#readme",
   "dependencies": {
-    "range-parser": "1.1.0",
+    "range-parser": "1.2.0",
     "range-stream": "1.1.0",
     "simple-bufferstream": "1.0.0"
   },
