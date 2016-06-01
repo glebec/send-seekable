@@ -1,6 +1,6 @@
 {
   "name": "send-seekable",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Express.js/connect middleware for serving partial content (206) requests for buffers or streams",
   "main": "send-seekable.js",
   "engines": {
