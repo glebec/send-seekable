@@ -122,7 +122,7 @@ describe('`res.sendSeekable`', function () {
       });
 
       it('sets the `Content-Length` header to the content byte length', function (done) {
-        appTester.expect('Content-Length', content.length, done);
+        appTester.expect('Content-Length', content.length.toString(), done);
       });
 
       testInvariantBehavior();
@@ -146,7 +146,7 @@ describe('`res.sendSeekable`', function () {
         });
 
         it('sets the `Content-Length` header to the content byte length', function (done) {
-          appTester.expect('Content-Length', content.length, done);
+          appTester.expect('Content-Length', content.length.toString(), done);
         });
 
         it('sets the `Content-Type` header if configured', function (done) {
