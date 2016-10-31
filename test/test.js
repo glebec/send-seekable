@@ -118,7 +118,7 @@ describe('`res.sendSeekable`', function () {
       });
 
       it('sends no body', function (done) {
-        appTester.expect('', done);
+        appTester.expect(undefined, done);
       });
 
       it('sets the `Content-Length` header to the content byte length', function (done) {
