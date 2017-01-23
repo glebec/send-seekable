@@ -5,6 +5,8 @@
 
 # Send-Seekable
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/glebec/send-seekable.svg)](https://greenkeeper.io/)
+
 ### Express.js/connect middleware for serving partial content (206) byte-range responses from buffers or streams
 
 Need to support seeking in a (reproducible) buffer or stream? Attach this middleware to your `GET` route and you can now `res.sendSeekable` your resource:
