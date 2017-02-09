@@ -1,7 +1,7 @@
 [![npm version](https://img.shields.io/npm/v/send-seekable.svg?maxAge=3600)](https://www.npmjs.com/package/send-seekable)
 [![Codeship](https://img.shields.io/codeship/641e1c10-0600-0134-54e5-56f9205ea8b9.svg)](https://codeship.com/projects/154589)
 [![Code Climate](https://img.shields.io/codeclimate/github/glebec/send-seekable.svg?maxAge=3600)]()
-[![Greenkeeper.io is keeping this repo's dependencies up to date](https://img.shields.io/badge/greenkeeper.io-monitoring-brightgreen.svg?maxAge=3600)](https://greenkeeper.io/)
+[![Greenkeeper badge](https://badges.greenkeeper.io/glebec/send-seekable.svg)](https://greenkeeper.io/)
 
 # Send-Seekable
 
