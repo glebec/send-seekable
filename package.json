@@ -43,7 +43,7 @@
   },
   "devDependencies": {
     "chai": "~3.5.0",
-    "express": "~4.14.0",
+    "express": "~5.0.0-alpha.4",
     "mocha": "~3.2.0",
     "sinon": "~1.17.4",
     "sinon-chai": "~2.8.0",
