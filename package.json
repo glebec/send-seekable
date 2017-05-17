@@ -46,7 +46,7 @@
     "express": "~4.14.0",
     "mocha": "~3.3.0",
     "sinon": "~1.17.4",
-    "sinon-chai": "~2.8.0",
+    "sinon-chai": "~2.9.0",
     "supertest": "~2.0.1"
   }
 }
