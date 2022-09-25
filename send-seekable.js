@@ -1,7 +1,7 @@
 'use strict';
 var rangeStream = require('range-stream');
 var parseRange = require('range-parser');
-var sbuff = require('simple-bufferstream');
+var sbuff = require('./buffer-stream.js');
 
 module.exports = function (req, res, next) {
   // every new request gets a thin wrapper over the generic function
