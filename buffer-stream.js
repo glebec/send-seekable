@@ -10,7 +10,7 @@ module.exports = function readableBufferStream (srcBuf) {
       var remaining = srcBuf.length - bytesRead;
       if (remaining > 0) {
         var toRead = Math.min(size, remaining);
-        this.push(srcBuf.subarray(bytesRead, bytesRead + toRead));
+        this.push(srcBuf.slice(bytesRead, bytesRead + toRead));
         bytesRead += toRead;
       } else {
         this.push(null);
